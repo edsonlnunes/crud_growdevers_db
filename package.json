@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
     "dev:richard": "ts-node-dev --transpile-only src/db/growdevers.ts",
-    "dev:debug": "ts-node-dev --inspect --respawn --transpile-only src/index.ts"
+    "dev:debug": "ts-node-dev --inspect --respawn --transpile-only src/index.ts",
+    "build": "npm install && npx tsc",
+    "start": "node dist/index.js"
   },
   "keywords": [],
   "author": "",
