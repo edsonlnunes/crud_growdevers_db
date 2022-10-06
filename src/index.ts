@@ -9,4 +9,6 @@ app.use(cors());
 
 appRoutes(app);
 
+console.log(process.env.PORT);
+
 app.listen(process.env.PORT || 3333, () => console.log("API RODANDO"));
