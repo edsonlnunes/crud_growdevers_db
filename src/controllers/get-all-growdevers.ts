@@ -1,13 +1,12 @@
 import { Request, Response } from "express";
-import { getGrowdeversSync } from "../db/growdevers";
+import { GrowdeverRepository } from "../repositories/growdever";
 
 export class GetAllGrowdeversController {
-  getAll(request: Request, response: Response) {
+  async getAll(request: Request, response: Response) {
     const { name, status } = request.query;
 
-    let growdevers = getGrowdeversSync().map((grow) => {
-      return grow.toJson();
-    });
+    const repository = new GrowdeverRepository();
+    let growdevers = await repository.findGrowdevers();
 
     if (name || status) {
       growdevers = growdevers.filter((growdever) => {
@@ -29,6 +28,6 @@ export class GetAllGrowdeversController {
       });
     }
 
-    return response.json(growdevers);
+    return response.json(growdevers.map((g) => g.toJson()));
   }
 }

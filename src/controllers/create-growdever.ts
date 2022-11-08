@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 import { Growdever } from "../models/growdever";
-import { saveGrowdeversSync, getGrowdeversSync } from "../db/growdevers";
+import { GrowdeverRepository } from "../repositories/growdever";
 
 export class CreateGrowdeverController {
-  create(request: Request, response: Response) {
+  async create(request: Request, response: Response) {
     const { name, cpf, birth, skills } = request.body;
 
     if (skills && !(skills instanceof Array)) {
@@ -12,11 +12,9 @@ export class CreateGrowdeverController {
 
     const growdever = new Growdever(name, birth, cpf, skills);
 
-    const growdevers = getGrowdeversSync();
+    const repository = new GrowdeverRepository();
 
-    growdevers.push(growdever);
-
-    saveGrowdeversSync(growdevers);
+    await repository.saveGrowdever(growdever);
 
     return response.json(growdever.toJson());
   }
