@@ -18,7 +18,11 @@ const pool = new Pool({
 
 export const findAllGrowdevers = async (): Promise<Growdever[]> => {
   const client = await pool.connect();
-  const result = await client.query("SELECT * FROM growdevers");
+  const result = await client.query(
+    "SELECT * FROM growdevers where id = '29f440b8-8189-409a-a635-99b872be503a'"
+  );
+
+  console.log(result);
 
   client.release();
 
@@ -60,4 +64,4 @@ export const saveGrowdever = async (growdever: Growdever): Promise<void> => {
 
 // saveGrowdever(new Growdever("Rafael", "1997-09-26", "55522233322", ["JS"]));
 
-// findAllGrowdevers().then((result) => console.log(result));
+findAllGrowdevers();

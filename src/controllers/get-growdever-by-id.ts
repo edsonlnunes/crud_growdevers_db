@@ -1,13 +1,13 @@
 import { Request, Response } from "express";
-import { getGrowdeversSync } from "../db/growdevers";
+import { GrowdeverRepository } from "../repositories/growdever";
 
 export class GetGrowdeverByIdController {
-  getById(request: Request, response: Response) {
+  async getById(request: Request, response: Response) {
     const { id } = request.params;
 
-    const growdever = getGrowdeversSync().find(
-      (growdever) => growdever.id === id
-    );
+    const repository = new GrowdeverRepository();
+
+    const growdever = await repository.findByIDGrowdever(id);
 
     if (!growdever) {
       return response.status(404).json({ error: "Growdever não encontrado" });
