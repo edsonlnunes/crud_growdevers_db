@@ -2,15 +2,15 @@ import { Growdever } from "../models/growdever";
 import { Pool } from "pg";
 
 // const pool = new Pool({
-//     host: 'dpg-cdbjgs4gqg47k7r9bls0-a.oregon-postgres.render.com',
-//     database: 'teste_uil8',
-//     password: 'bIPv6WqLbLd374Tfjk5WBgBj9UcRwcc8',
-//     user: 'teste_uil8_user'
+//   host: process.env.DB_HOST,
+//   port: process.env.DB_PORT,
+//   user: process.env.DB_USERNAME,
+//   password: process.env.DB_PASSWORD,
+//   database: process.env.DB_DATABASE,
 // })
 
 const pool = new Pool({
-  connectionString:
-    "postgres://teste_uil8_user:bIPv6WqLbLd374Tfjk5WBgBj9UcRwcc8@dpg-cdbjgs4gqg47k7r9bls0-a.oregon-postgres.render.com/teste_uil8",
+  connectionString: process.env.DATABASE_URL,
   ssl: {
     rejectUnauthorized: false,
   },

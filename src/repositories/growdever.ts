@@ -1,11 +1,10 @@
 import { Growdever } from "../models/growdever";
 import { myPG } from "../db";
+import { pgHelper } from "../database/pg-helper";
 
 export class GrowdeverRepository {
   async saveGrowdever(growdever: Growdever): Promise<void> {
-    const client = await myPG.connect();
-
-    await client.query(
+    await pgHelper.client?.query(
       "INSERT INTO growdevers VALUES($1, $2, $3, $4, $5, $6)",
       [
         growdever.id,
@@ -16,18 +15,12 @@ export class GrowdeverRepository {
         growdever.skills.join(),
       ]
     );
-
-    client.release();
   }
 
   async findGrowdevers(): Promise<Growdever[]> {
-    const client = await myPG.connect();
+    const result = await pgHelper.client?.query("SELECT * FROM growdevers");
 
-    const result = await client.query("SELECT * FROM growdevers");
-
-    client.release();
-
-    return result.rows.map((row) => {
+    return (result as Array<any>).map((row) => {
       const skills = row.skills ? (row.skills as string).split(",") : [];
       return Growdever.create(
         row.id,
@@ -41,24 +34,20 @@ export class GrowdeverRepository {
   }
 
   async findByIDGrowdever(id: string): Promise<Growdever | undefined> {
-    const client = await myPG.connect();
-
-    const result = await client.query(
+    const result: Array<any> = await pgHelper.client?.query(
       "SELECT * FROM growdevers WHERE id = $1",
       [id]
     );
 
-    client.release();
-
-    if (result.rowCount === 0) return undefined;
+    if (result.length === 0) return undefined;
 
     const growdever = Growdever.create(
-      result.rows[0].id,
-      result.rows[0].name,
-      result.rows[0].cpf,
-      result.rows[0].birth,
-      result.rows[0].status,
-      result.rows[0].skills ? (result.rows[0].skills as string).split(",") : []
+      result[0].id,
+      result[0].name,
+      result[0].cpf,
+      result[0].birth,
+      result[0].status,
+      result[0].skills ? (result[0].skills as string).split(",") : []
     );
 
     return growdever;
