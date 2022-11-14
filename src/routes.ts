@@ -1,34 +1,31 @@
 import { Express } from "express";
-import { AddGrowdeverSkillsController } from "./controllers/add-growdever-skills";
-import { CreateGrowdeverController } from "./controllers/create-growdever";
-import { DeleteSkillController } from "./controllers/delete-skills";
-import { GetAllGrowdeversController } from "./controllers/get-all-growdevers";
-import { GetGrowdeverByIdController } from "./controllers/get-growdever-by-id";
-import { RemoveGrowdeverController } from "./controllers/remove-growdever";
-import { UpdateGrowdeverController } from "./controllers/update-growdever";
-import { ClearFormattingMiddleware } from "./middlewares/clear-formatting";
-import { ValidateCpfMiddleware } from "./middlewares/validate-cpf";
-import { VerifyCpfExistsMiddleware } from "./middlewares/verify-cpf-exists";
+import { GrowdeverSkillController } from "./controllers/growdever-skill.controller";
+import { GrowdeverController } from "./controllers/growdever.controller";
+
+import { ClearFormattingMiddleware } from "./middlewares/clear-formatting.middleware";
+import { ValidateCpfMiddleware } from "./middlewares/validate-cpf.middleware";
+import { VerifyCpfExistsMiddleware } from "./middlewares/verify-cpf-exists.middleware";
 
 export default (app: Express) => {
   app.get("/", (request, response) => response.send("ESTÁ FUNCIONANDO"));
 
-  app.get("/growdevers", new GetAllGrowdeversController().getAll);
+  const growdeverController = new GrowdeverController();
+  const growdeverSkillController = new GrowdeverSkillController();
+
+  app.get("/growdevers", growdeverController.getAll);
   app.post(
     "/growdevers",
-    // new ClearFormattingMiddleware().clearFomatting,
+    new ClearFormattingMiddleware().clearFomatting,
     new ValidateCpfMiddleware().validateCpf,
     new VerifyCpfExistsMiddleware().verifyCpfExists,
-    new CreateGrowdeverController().create
+    growdeverController.create
   );
-  app.get("/growdevers/:id", new GetGrowdeverByIdController().getById);
-  app.delete("/growdevers/:id", new RemoveGrowdeverController().remove);
-  app.put("/growdevers/:id", new UpdateGrowdeverController().update);
-  app.put(
-    "/growdevers/:id/skills",
-    new AddGrowdeverSkillsController().addSkills
-  );
-  app.delete("/growdevers/:id/skills", new DeleteSkillController().deleteSkill);
+  app.get("/growdevers/:id", growdeverController.getById);
+  app.delete("/growdevers/:id", growdeverController.remove);
+  app.put("/growdevers/:id", growdeverController.update);
+
+  app.put("/growdevers/:id/skills", growdeverSkillController.addSkills);
+  app.delete("/growdevers/:id/skills", growdeverSkillController.deleteSkill);
 };
 
 // M = MODELS
