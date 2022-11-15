@@ -59,7 +59,7 @@ export class GrowdeverController {
       return response.status(400).json({ error: "Skills no formado inválido" });
     }
 
-    const growdever = new Growdever(name, birth, cpf, skills);
+    const growdever = new Growdever(name, new Date(birth), cpf, skills);
 
     const repository = new GrowdeverRepository();
 
@@ -71,21 +71,14 @@ export class GrowdeverController {
   async remove(request: Request, response: Response) {
     const { id } = request.params;
 
-    const growdeversDB = getGrowdeversSync();
+    const repository = new GrowdeverRepository();
 
-    const indexGrowdever = growdeversDB.findIndex(
-      (growdever) => growdever.id === id
-    );
-
-    if (indexGrowdever < 0) {
-      return response.status(404).json({ error: "Growdever não encontrado" });
+    try {
+      await repository.removeGrowdev(id);
+      return response.status(200).json();
+    } catch (error: any) {
+      return response.status(500).json({ error: error.message });
     }
-
-    growdeversDB.splice(indexGrowdever, 1);
-
-    saveGrowdeversSync(growdeversDB);
-
-    return response.status(200).json();
   }
 
   async update(request: Request, response: Response) {

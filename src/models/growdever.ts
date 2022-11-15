@@ -40,23 +40,13 @@ export class Growdever {
     return [...this._skills];
   }
 
-  constructor(name: string, birth: string, cpf: string, skills?: string[]) {
+  constructor(name: string, birth: Date, cpf: string, skills?: string[]) {
     this._id = crypto.randomUUID();
     this._name = name;
-    this._birth = new Date(birth);
+    this._birth = birth;
     this._cpf = cpf.clearSpecialCharacteres();
     this._status = "STUDYING";
     this._skills = skills ?? [];
-
-    // this._skills = skills !== undefined ? skills : [];
-    // this._skills = skills ? skills : [];
-
-    // if(skills){
-    // if (skills !== undefined) {
-    //   this._skills = skills;
-    // } else {
-    //   this._skills = [];
-    // }
   }
 
   // static nomeMentor: string = "Edson vindo do static";
@@ -65,7 +55,7 @@ export class Growdever {
     id: string,
     name: string,
     cpf: string,
-    birth: string,
+    birth: Date,
     status: string,
     skills: string[]
   ): Growdever {

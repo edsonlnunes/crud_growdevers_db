@@ -1,26 +1,36 @@
 import { Growdever } from "../models/growdever";
-import { myPG } from "../db";
+import { GrowdeverEntity } from "../database/entities/growdever.entity";
 import { pgHelper } from "../database/pg-helper";
 
+// DATA MAPPER
 export class GrowdeverRepository {
+  async verifyGrowdeverExistsByCpf(cpf: string): Promise<boolean> {
+    const manager = pgHelper.client.manager;
+    const growdeverEntity = await manager.findOneBy(GrowdeverEntity, { cpf });
+    return !!growdeverEntity;
+  }
+
   async saveGrowdever(growdever: Growdever): Promise<void> {
-    await pgHelper.client?.query(
-      "INSERT INTO growdevers VALUES($1, $2, $3, $4, $5, $6)",
-      [
-        growdever.id,
-        growdever.name,
-        growdever.birth,
-        growdever.cpf,
-        growdever.status,
-        growdever.skills.join(),
-      ]
-    );
+    const manager = pgHelper.client.manager;
+
+    const growdeverEntity = manager.create(GrowdeverEntity, {
+      id: growdever.id,
+      name: growdever.name,
+      birth: growdever.birth,
+      cpf: growdever.cpf,
+      status: growdever.status,
+      skills: growdever.skills.join(),
+    });
+
+    await manager.save(growdeverEntity);
   }
 
   async findGrowdevers(): Promise<Growdever[]> {
-    const result = await pgHelper.client?.query("SELECT * FROM growdevers");
+    const manager = pgHelper.client.manager;
 
-    return (result as Array<any>).map((row) => {
+    const growdeversEntities = await manager.find(GrowdeverEntity);
+
+    return growdeversEntities.map((row) => {
       const skills = row.skills ? (row.skills as string).split(",") : [];
       return Growdever.create(
         row.id,
@@ -34,22 +44,105 @@ export class GrowdeverRepository {
   }
 
   async findByIDGrowdever(id: string): Promise<Growdever | undefined> {
-    const result: Array<any> = await pgHelper.client?.query(
-      "SELECT * FROM growdevers WHERE id = $1",
-      [id]
-    );
+    const manager = pgHelper.client.manager;
+    // const growdeverEntity = await manager.findOne(GrowdeverEntity, {
+    //   where: { id },
+    // });
 
-    if (result.length === 0) return undefined;
+    const growdeverEntity = await manager.findOneBy(GrowdeverEntity, { id });
+
+    if (!growdeverEntity) return undefined;
 
     const growdever = Growdever.create(
-      result[0].id,
-      result[0].name,
-      result[0].cpf,
-      result[0].birth,
-      result[0].status,
-      result[0].skills ? (result[0].skills as string).split(",") : []
+      growdeverEntity.id,
+      growdeverEntity.name,
+      growdeverEntity.cpf,
+      growdeverEntity.birth,
+      growdeverEntity.status,
+      growdeverEntity.skills
+        ? (growdeverEntity.skills as string).split(",")
+        : []
     );
 
     return growdever;
   }
+
+  async removeGrowdev(id: string): Promise<void> {
+    const manager = pgHelper.client.manager;
+
+    const growdeverEntity = await manager.findOneBy(GrowdeverEntity, { id });
+
+    if (!growdeverEntity) throw Error("Growdever não encontrado");
+
+    // await manager.remove(growdeverEntity);
+    await manager.delete(GrowdeverEntity, { id });
+  }
 }
+
+// ACTIVE RECORD
+// export class GrowdeverRepository {
+//   async verifyGrowdeverExistsByCpf(cpf: string): Promise<boolean> {
+//     const growdeverEntity = await GrowdeverEntity.findOneBy({ cpf });
+//     return !!growdeverEntity;
+//   }
+
+//   async saveGrowdever(growdever: Growdever): Promise<void> {
+//     const growdeverEntity = GrowdeverEntity.create({
+//       id: growdever.id,
+//       name: growdever.name,
+//       birth: growdever.birth,
+//       cpf: growdever.cpf,
+//       status: growdever.status,
+//       skills: growdever.skills.join(),
+//     });
+
+//     await growdeverEntity.save();
+//   }
+
+//   async findGrowdevers(): Promise<Growdever[]> {
+//     const growdeversEntities = await GrowdeverEntity.find();
+
+//     return growdeversEntities.map((row) => {
+//       const skills = row.skills ? (row.skills as string).split(",") : [];
+//       return Growdever.create(
+//         row.id,
+//         row.name,
+//         row.cpf,
+//         row.birth,
+//         row.status,
+//         skills
+//       );
+//     });
+//   }
+
+//   async findByIDGrowdever(id: string): Promise<Growdever | undefined> {
+//     // const growdeverEntity = await GrowdeverEntity.findOne({
+//     //   where: { id },
+//     // });
+
+//     const growdeverEntity = await GrowdeverEntity.findOneBy({ id });
+
+//     if (!growdeverEntity) return undefined;
+
+//     const growdever = Growdever.create(
+//       growdeverEntity.id,
+//       growdeverEntity.name,
+//       growdeverEntity.cpf,
+//       growdeverEntity.birth,
+//       growdeverEntity.status,
+//       growdeverEntity.skills
+//         ? (growdeverEntity.skills as string).split(",")
+//         : []
+//     );
+
+//     return growdever;
+//   }
+
+//   async removeGrowdev(id: string): Promise<void> {
+//     const growdeverEntity = await GrowdeverEntity.findOneBy({ id });
+
+//     if (!growdeverEntity) throw Error("Growdever não encontrado");
+
+//     await growdeverEntity.remove();
+//   }
+// }

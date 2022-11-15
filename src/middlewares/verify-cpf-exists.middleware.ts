@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { getGrowdevers } from "../db/growdevers";
+import { GrowdeverRepository } from "../repositories/growdever.repository";
 import "../utils/extension-methods";
 
 export class VerifyCpfExistsMiddleware {
@@ -10,14 +11,11 @@ export class VerifyCpfExistsMiddleware {
   ) {
     const { cpf } = request.body;
 
-    const growdevers = await getGrowdevers();
+    const repository = new GrowdeverRepository();
 
-    if (
-      growdevers.some(
-        (growdever) =>
-          growdever.cpf === (cpf as string).clearSpecialCharacteres()
-      )
-    ) {
+    const growdeverExits = await repository.verifyGrowdeverExistsByCpf(cpf);
+
+    if (growdeverExits) {
       return response.status(400).json({ error: "CPF já cadastrado" });
     }
 
