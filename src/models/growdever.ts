@@ -1,5 +1,6 @@
 import crypto from "crypto";
 import "../utils/extension-methods";
+import { Address } from "./address";
 
 export class Growdever {
   // caracteristicas (atributos)
@@ -40,6 +41,11 @@ export class Growdever {
     return [...this._skills];
   }
 
+  private _address?: Address;
+  get address(): Address | undefined {
+    return this._address;
+  }
+
   constructor(name: string, birth: Date, cpf: string, skills?: string[]) {
     this._id = crypto.randomUUID();
     this._name = name;
@@ -49,19 +55,19 @@ export class Growdever {
     this._skills = skills ?? [];
   }
 
-  // static nomeMentor: string = "Edson vindo do static";
-
   static create(
     id: string,
     name: string,
     cpf: string,
     birth: Date,
     status: string,
-    skills: string[]
+    skills: string[],
+    address?: Address
   ): Growdever {
     const growdever = new Growdever(name, birth, cpf, skills);
     growdever._id = id;
     growdever._status = status;
+    growdever._address = address;
     return growdever;
   }
 
@@ -72,18 +78,6 @@ export class Growdever {
 
     if (!birth || isNaN(birth.getDate()))
       throw new Error("Data de nascimento inválido");
-
-    // 'STUDYING', 'GRADUATED', 'CANCELED'
-
-    // if (
-    //   status !== "STUDYING" &&
-    //   status !== "GRADUATED" &&
-    //   status !== "CANCELED"
-    // ) {
-    //   throw new Error(
-    //     "Status inválido. Valores permitidos: STUDYING, GRADUATED ou CANCELED"
-    //   );
-    // }
 
     if (!["STUDYING", "GRADUATED", "CANCELED"].some((s) => s === status)) {
       throw new Error(
@@ -112,13 +106,11 @@ export class Growdever {
       cpf: this._cpf,
       status: this._status,
       skills: this._skills,
+      address: this._address?.toJson(),
     };
   }
 
   deleteSkill(skill: string) {
-    // "" -> false
-    // undefined -> false
-    // null -> false
     if (!skill) {
       throw new Error("Skill informada está inválida");
     }

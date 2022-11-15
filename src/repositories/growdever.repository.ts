@@ -1,6 +1,8 @@
 import { Growdever } from "../models/growdever";
 import { GrowdeverEntity } from "../database/entities/growdever.entity";
 import { pgHelper } from "../database/pg-helper";
+import { AddressEntity } from "../database/entities/address.entity";
+import { Address } from "../models/address";
 
 // DATA MAPPER
 export class GrowdeverRepository {
@@ -45,13 +47,24 @@ export class GrowdeverRepository {
 
   async findByIDGrowdever(id: string): Promise<Growdever | undefined> {
     const manager = pgHelper.client.manager;
-    // const growdeverEntity = await manager.findOne(GrowdeverEntity, {
-    //   where: { id },
-    // });
 
-    const growdeverEntity = await manager.findOneBy(GrowdeverEntity, { id });
+    // const growdeverEntity = await manager.findOneBy(GrowdeverEntity, { id });
+
+    const growdeverEntity = await manager.findOne(GrowdeverEntity, {
+      where: { id },
+      // relations: ["addressEntity"],
+    });
 
     if (!growdeverEntity) return undefined;
+
+    const address = growdeverEntity.addressEntity
+      ? Address.create(
+          growdeverEntity.addressEntity.id,
+          growdeverEntity.addressEntity.street,
+          growdeverEntity.addressEntity.city,
+          growdeverEntity.addressEntity.uf
+        )
+      : undefined;
 
     const growdever = Growdever.create(
       growdeverEntity.id,
@@ -61,7 +74,8 @@ export class GrowdeverRepository {
       growdeverEntity.status,
       growdeverEntity.skills
         ? (growdeverEntity.skills as string).split(",")
-        : []
+        : [],
+      address
     );
 
     return growdever;
