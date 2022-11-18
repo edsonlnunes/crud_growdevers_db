@@ -3,6 +3,7 @@ import { GrowdeverEntity } from "../database/entities/growdever.entity";
 import { pgHelper } from "../database/pg-helper";
 import { AddressEntity } from "../database/entities/address.entity";
 import { Address } from "../models/address";
+import { Assessment } from "../models/assessment";
 
 // DATA MAPPER
 export class GrowdeverRepository {
@@ -15,6 +16,17 @@ export class GrowdeverRepository {
   async saveGrowdever(growdever: Growdever): Promise<void> {
     const manager = pgHelper.client.manager;
 
+    if (growdever.address) {
+      const addressEntity = manager.create(AddressEntity, {
+        id: growdever.address.id,
+        street: growdever.address.street,
+        city: growdever.address.city,
+        uf: growdever.address.uf,
+      });
+
+      await manager.save(addressEntity);
+    }
+
     const growdeverEntity = manager.create(GrowdeverEntity, {
       id: growdever.id,
       name: growdever.name,
@@ -22,6 +34,7 @@ export class GrowdeverRepository {
       cpf: growdever.cpf,
       status: growdever.status,
       skills: growdever.skills.join(),
+      addressId: growdever.address ? growdever.address.id : undefined,
     });
 
     await manager.save(growdeverEntity);
@@ -52,7 +65,7 @@ export class GrowdeverRepository {
 
     const growdeverEntity = await manager.findOne(GrowdeverEntity, {
       where: { id },
-      // relations: ["addressEntity"],
+      // relations: ["assessmentsEntities"],
     });
 
     if (!growdeverEntity) return undefined;
@@ -66,6 +79,12 @@ export class GrowdeverRepository {
         )
       : undefined;
 
+    // const assesments = growdeverEntity.assessmentsEntities
+    //   ? growdeverEntity.assessmentsEntities.map((entity) =>
+    //       Assessment.create(entity.id, entity.score, entity.subject)
+    //     )
+    //   : undefined;
+
     const growdever = Growdever.create(
       growdeverEntity.id,
       growdeverEntity.name,
@@ -76,6 +95,7 @@ export class GrowdeverRepository {
         ? (growdeverEntity.skills as string).split(",")
         : [],
       address
+      // assesments
     );
 
     return growdever;

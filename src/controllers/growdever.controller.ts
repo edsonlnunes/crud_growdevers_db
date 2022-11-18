@@ -5,6 +5,7 @@ import {
   saveGrowdevers,
   saveGrowdeversSync,
 } from "../db/growdevers";
+import { Address } from "../models/address";
 import { Growdever } from "../models/growdever";
 import { GrowdeverRepository } from "../repositories/growdever.repository";
 
@@ -53,13 +54,17 @@ export class GrowdeverController {
   }
 
   async create(request: Request, response: Response) {
-    const { name, cpf, birth, skills } = request.body;
+    const { name, cpf, birth, skills, address } = request.body;
 
     if (skills && !(skills instanceof Array)) {
       return response.status(400).json({ error: "Skills no formado inválido" });
     }
 
     const growdever = new Growdever(name, new Date(birth), cpf, skills);
+
+    if (address) {
+      growdever.addAddress(address.street, address.city, address.uf);
+    }
 
     const repository = new GrowdeverRepository();
 

@@ -1,4 +1,5 @@
 import { Express } from "express";
+import { AssessmentController } from "./controllers/assessment.controller";
 import { GrowdeverSkillController } from "./controllers/growdever-skill.controller";
 import { GrowdeverController } from "./controllers/growdever.controller";
 
@@ -11,6 +12,7 @@ export default (app: Express) => {
 
   const growdeverController = new GrowdeverController();
   const growdeverSkillController = new GrowdeverSkillController();
+  const assessmentController = new AssessmentController();
 
   app.get("/growdevers", growdeverController.getAll);
   app.post(
@@ -26,6 +28,11 @@ export default (app: Express) => {
 
   app.put("/growdevers/:id/skills", growdeverSkillController.addSkills);
   app.delete("/growdevers/:id/skills", growdeverSkillController.deleteSkill);
+
+  app.get(
+    "/growdevers/:growdeverId/assessments",
+    assessmentController.findAllAssessmentsByGrowdever
+  );
 };
 
 // M = MODELS
