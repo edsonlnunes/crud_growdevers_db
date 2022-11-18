@@ -111,6 +111,70 @@ export class GrowdeverRepository {
     // await manager.remove(growdeverEntity);
     await manager.delete(GrowdeverEntity, { id });
   }
+
+  async updateGrowdever(growdever: Growdever): Promise<void> {
+    const manager = pgHelper.client.manager;
+
+    const growdeverEntity = await manager.findOne(GrowdeverEntity, {
+      where: { id: growdever.id },
+    });
+
+    if (!growdeverEntity) throw new Error("Growdever não encontrado");
+
+    // atualiza os dados pessoais do growdever
+    await manager.update(
+      GrowdeverEntity,
+      { id: growdever.id },
+      {
+        name: growdever.name,
+        status: growdever.status,
+        birth: growdever.birth,
+      }
+    );
+
+    // endereco
+
+    // pode ser incluído
+    if (!growdeverEntity.addressEntity && growdever.address) {
+      const addressEntity = manager.create(AddressEntity, {
+        id: growdever.address.id,
+        street: growdever.address.street,
+        city: growdever.address.city,
+        uf: growdever.address.uf,
+      });
+
+      await manager.save(addressEntity);
+
+      await manager.update(
+        GrowdeverEntity,
+        { id: growdeverEntity.id },
+        { addressId: addressEntity.id }
+      );
+    }
+
+    // pode ser removido
+    if (growdeverEntity.addressEntity && !growdever.address) {
+      await manager.update(
+        GrowdeverEntity,
+        { id: growdeverEntity.id },
+        { addressId: null }
+      );
+      await manager.delete(AddressEntity, { id: growdeverEntity.addressId });
+    }
+
+    // pode ser atualizado
+    if (growdeverEntity.addressEntity && growdever.address) {
+      await manager.update(
+        AddressEntity,
+        { id: growdeverEntity.addressId },
+        {
+          street: growdever.address.street,
+          city: growdever.address.city,
+          uf: growdever.address.uf,
+        }
+      );
+    }
+  }
 }
 
 // ACTIVE RECORD

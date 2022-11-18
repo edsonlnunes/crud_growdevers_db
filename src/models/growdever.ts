@@ -3,6 +3,13 @@ import "../utils/extension-methods";
 import { Address } from "./address";
 import { Assessment } from "./assessment";
 
+// data transfer object
+interface AddressDTO {
+  street: string;
+  city: string;
+  uf: string;
+}
+
 export class Growdever {
   // caracteristicas (atributos)
   private _id: string;
@@ -88,7 +95,12 @@ export class Growdever {
     this._address = new Address(street, city, uf);
   }
 
-  updateInformation(name: string, birth: Date, status: string) {
+  updateInformation(
+    name: string,
+    birth: Date,
+    status: string,
+    address?: AddressDTO
+  ) {
     if (!name) throw new Error("Nome inválido");
 
     if (!birth || isNaN(birth.getDate()))
@@ -103,6 +115,19 @@ export class Growdever {
     this._name = name;
     this._birth = birth;
     this._status = status;
+
+    // remove endereco
+    if (this._address && !address) this._address = undefined;
+
+    // atualiza endereco
+    if (this._address && address) {
+      this._address.update(address.street, address.city, address.uf);
+    }
+
+    // inclui endereco
+    if (!this._address && address) {
+      this.addAddress(address.street, address.city, address.uf);
+    }
   }
 
   updateSkills(newSkills: string[]) {

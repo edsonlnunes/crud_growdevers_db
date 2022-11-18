@@ -34,6 +34,12 @@ export class Address {
     return model;
   }
 
+  update(street: string, city: string, uf: string): void {
+    this._city = city;
+    this._street = street;
+    this._uf = uf;
+  }
+
   toJson() {
     return {
       id: this._id,

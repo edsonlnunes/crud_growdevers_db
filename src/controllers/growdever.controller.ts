@@ -89,19 +89,19 @@ export class GrowdeverController {
   async update(request: Request, response: Response) {
     const { id } = request.params;
 
-    const { name, birth, status } = request.body;
+    const { name, birth, status, address } = request.body;
 
-    const growdeversDB = await getGrowdevers();
+    const repository = new GrowdeverRepository();
 
-    const growdever = growdeversDB.find((growdever) => growdever.id === id);
+    const growdever = await repository.findByIDGrowdever(id);
 
     if (!growdever) {
       return response.status(404).json({ error: "Growdever não encontrado" });
     }
 
     try {
-      growdever.updateInformation(name, new Date(birth), status);
-      await saveGrowdevers(growdeversDB);
+      growdever.updateInformation(name, new Date(birth), status, address);
+      await repository.updateGrowdever(growdever);
     } catch (err: any) {
       return response.status(400).json({ error: err.message });
     }

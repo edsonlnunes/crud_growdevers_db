@@ -31,7 +31,7 @@ export class GrowdeverEntity {
   skills!: string;
 
   @Column({ name: "address_id" })
-  addressId?: string;
+  addressId!: string | null;
 
   @OneToOne(() => AddressEntity, { eager: true })
   @JoinColumn({ name: "address_id", referencedColumnName: "id" })

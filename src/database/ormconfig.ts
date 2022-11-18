@@ -1,6 +1,11 @@
 import "dotenv/config";
 import { DataSourceOptions } from "typeorm";
 
+const rootDir = process.env.NODE_ENV === "production" ? "dist" : "src";
+
+console.log("ROOT DIR: " + rootDir);
+console.log("NODE ENV: " + process.env.NODE_ENV);
+
 const config: DataSourceOptions = {
   type: "postgres",
   url: process.env.DATABASE_URL,
@@ -9,7 +14,7 @@ const config: DataSourceOptions = {
   ssl: {
     rejectUnauthorized: false,
   },
-  entities: ["src/database/entities/*.ts"],
+  entities: [rootDir + "/database/entities/*"],
 };
 
 export default config;
