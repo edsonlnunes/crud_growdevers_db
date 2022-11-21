@@ -1,0 +1,15 @@
+version: "3"
+
+services:
+
+  app:
+    image: node:16.11
+    # command: npm run dev
+    container_name: crud-growdevers-db
+    ports:
+      - 8080:8080
+      - 9229:9229
+    working_dir: /home/node/app
+    volumes:
+      - .:/home/node/app
+    tty: true

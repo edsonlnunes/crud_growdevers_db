@@ -8,7 +8,11 @@
     "dev:db": "ts-node-dev --transpile-only src/db/growdevers-pg.ts",
     "dev:debug": "ts-node-dev --inspect --respawn --transpile-only src/index.ts",
     "build": "npx tsc",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "migration:show": "yarn typeorm-ts-node-commonjs migration:show -d src/database/typeorm.ts",
+    "migration:run": "yarn typeorm-ts-node-commonjs migration:run -d src/database/typeorm.ts",
+    "migration:create": "yarn typeorm migration:create src/database/migrations/CreateTableAssessments",
+    "migration:revert": "yarn typeorm-ts-node-commonjs migration:revert -d src/database/typeorm.ts"
   },
   "keywords": [],
   "author": "",
