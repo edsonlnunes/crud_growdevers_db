@@ -1,9 +1,8 @@
-import { Growdever } from "../models/growdever";
-import { GrowdeverEntity } from "../database/entities/growdever.entity";
-import { pgHelper } from "../database/pg-helper";
-import { AddressEntity } from "../database/entities/address.entity";
-import { Address } from "../models/address";
-import { Assessment } from "../models/assessment";
+import { Growdever } from "../../../models/growdever";
+import { Address } from "../../../models/address";
+import { pgHelper } from "../../../shared/database/pg-helper";
+import { AddressEntity } from "../../../shared/database/entities/address.entity";
+import { GrowdeverEntity } from "../../../shared/database/entities/growdever.entity";
 
 // DATA MAPPER
 export class GrowdeverRepository {

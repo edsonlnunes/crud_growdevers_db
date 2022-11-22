@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
-import "../utils/extension-methods";
+import "../../../shared/utils/extension-methods";
 
-export class ClearFormattingMiddleware {
+export class ClearFormattingValidator {
   clearFomatting(request: Request, response: Response, next: NextFunction) {
     const cpf = request.body.cpf as string;
 

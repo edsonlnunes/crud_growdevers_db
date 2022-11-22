@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { cpf as cpfValidator } from "cpf-cnpj-validator";
 
-export class ValidateCpfMiddleware {
+export class ValidateCpfValidator {
   validateCpf(request: Request, response: Response, next: NextFunction) {
     const { cpf } = request.body;
 

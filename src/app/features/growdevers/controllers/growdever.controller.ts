@@ -1,12 +1,5 @@
 import { Request, Response } from "express";
-import {
-  getGrowdevers,
-  getGrowdeversSync,
-  saveGrowdevers,
-  saveGrowdeversSync,
-} from "../db/growdevers";
-import { Address } from "../models/address";
-import { Growdever } from "../models/growdever";
+import { Growdever } from "../../../models/growdever";
 import { GrowdeverRepository } from "../repositories/growdever.repository";
 
 export class GrowdeverController {

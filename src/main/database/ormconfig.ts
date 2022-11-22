@@ -13,8 +13,8 @@ const config: DataSourceOptions = {
   ssl: {
     rejectUnauthorized: false,
   },
-  entities: [rootDir + "/database/entities/*"],
-  migrations: [rootDir + "/database/migrations/*"],
+  entities: [rootDir + "/app/shared/database/entities/*"],
+  migrations: [rootDir + "/app/shared/database/migrations/*"],
 };
 
 export default config;

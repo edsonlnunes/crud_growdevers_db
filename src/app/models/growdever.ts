@@ -1,5 +1,5 @@
 import crypto from "crypto";
-import "../utils/extension-methods";
+import "../shared/utils/extension-methods";
 import { Address } from "./address";
 import { Assessment } from "./assessment";
 

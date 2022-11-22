@@ -1,9 +1,8 @@
 import { NextFunction, Request, Response } from "express";
-import { getGrowdevers } from "../db/growdevers";
 import { GrowdeverRepository } from "../repositories/growdever.repository";
-import "../utils/extension-methods";
+import "../../../shared/utils/extension-methods";
 
-export class VerifyCpfExistsMiddleware {
+export class VerifyCpfExistsValidator {
   async verifyCpfExists(
     request: Request,
     response: Response,

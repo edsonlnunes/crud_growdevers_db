@@ -1,11 +1,5 @@
 import { DataSource } from "typeorm";
-import config from "./ormconfig";
-
-// export interface PgHelper {
-//   client: DataSource | null;
-//   connect(): Promise<void>;
-//   disconnect(): Promise<void>;
-// }
+import config from "../../../main/database/ormconfig";
 
 export const pgHelper = {
   client: null as unknown as DataSource,

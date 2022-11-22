@@ -1,6 +1,6 @@
-import { AssessmentEntity } from "../database/entities/assessment.entity";
-import { pgHelper } from "../database/pg-helper";
-import { Assessment } from "../models/assessment";
+import { Assessment } from "../../../models/assessment";
+import { AssessmentEntity } from "../../../shared/database/entities/assessment.entity";
+import { pgHelper } from "../../../shared/database/pg-helper";
 
 export class AssessmentRepository {
   async getAssessmentsByGrowdever(growdeverId: string): Promise<Assessment[]> {
