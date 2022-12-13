@@ -13,6 +13,7 @@ export class GrowdeverRepository {
   }
 
   async saveGrowdever(growdever: Growdever): Promise<void> {
+    console.log("== PASSOU NO METODO SAVE GROWDEVER DO REPOSITORIO ===");
     const manager = pgHelper.client.manager;
 
     if (growdever.address) {

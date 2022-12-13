@@ -87,12 +87,8 @@ export class Growdever {
 
   // comportamentos (métodos)
 
-  addAddress(street: string, city: string, uf: string) {
-    if (!street || !city || !uf) {
-      throw new Error("Endereço inválido");
-    }
-
-    this._address = new Address(street, city, uf);
+  addAddress(address: Address) {
+    this._address = address;
   }
 
   updateInformation(
@@ -124,10 +120,10 @@ export class Growdever {
       this._address.update(address.street, address.city, address.uf);
     }
 
-    // inclui endereco
-    if (!this._address && address) {
-      this.addAddress(address.street, address.city, address.uf);
-    }
+    // // inclui endereco
+    // if (!this._address && address) {
+    //   this.addAddress(address.street, address.city, address.uf);
+    // }
   }
 
   updateSkills(newSkills: string[]) {

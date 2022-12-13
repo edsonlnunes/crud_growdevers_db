@@ -3,6 +3,7 @@ import { Address } from "../../../models/address";
 import { Growdever } from "../../../models/growdever";
 import { redisHelper } from "../../../shared/database/redis-helper";
 import { GrowdeverRepository } from "../repositories/growdever.repository";
+import { CreateGrowdever } from "../usecases/create-growdever.usecase";
 
 export class GrowdeverController {
   async getById(request: Request, response: Response) {
@@ -101,26 +102,31 @@ export class GrowdeverController {
   }
 
   async create(request: Request, response: Response) {
-    const { name, cpf, birth, skills, address } = request.body;
+    try {
+      const usecase = new CreateGrowdever(new GrowdeverRepository());
 
-    if (skills && !(skills instanceof Array)) {
-      return response.status(400).json({ error: "Skills no formado inválido" });
+      // const result = await usecase.execute({
+      //   name,
+      //   cpf,
+      //   birth: new Date(birth),
+      //   skills,
+      //   address,
+      // });
+
+      const result = await usecase.execute({
+        ...request.body,
+        birth: new Date(request.body.birth),
+      });
+
+      // limpa o cache
+      await redisHelper.client.del("growdevers");
+
+      return response.status(200).json(result);
+    } catch (error: any) {
+      return response
+        .status(500)
+        .json({ message: error.message, stack: error });
     }
-
-    const growdever = new Growdever(name, new Date(birth), cpf, skills);
-
-    if (address) {
-      growdever.addAddress(address.street, address.city, address.uf);
-    }
-
-    const repository = new GrowdeverRepository();
-
-    await repository.saveGrowdever(growdever);
-
-    // limpa o cache
-    await redisHelper.client.del("growdevers");
-
-    return response.json(growdever.toJson());
   }
 
   async remove(request: Request, response: Response) {
