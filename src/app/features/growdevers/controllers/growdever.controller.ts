@@ -6,6 +6,7 @@ import { GrowdeverRepository } from "../repositories/growdever.repository";
 import { CreateGrowdever } from "../usecases/create-growdever.usecase";
 import { GetGrowdeverById } from "../usecases/get-growdever-by-id.usecase";
 import { RemoveGrowdever } from "../usecases/remove-growdever.usecase";
+import { UpdateGrowdever } from "../usecases/update-growdever.usecase";
 
 export class GrowdeverController {
   async getById(request: Request, response: Response) {
@@ -151,22 +152,21 @@ export class GrowdeverController {
 
     const { name, birth, status, address } = request.body;
 
-    const repository = new GrowdeverRepository();
-
-    const growdever = await repository.findByIDGrowdever(id);
-
-    if (!growdever) {
-      return response.status(404).json({ error: "Growdever não encontrado" });
-    }
+    const usecase = new UpdateGrowdever(new GrowdeverRepository());
 
     try {
-      growdever.updateInformation(name, new Date(birth), status, address);
-      await repository.updateGrowdever(growdever);
+      const result = await usecase.execute({
+        id,
+        name,
+        birth: new Date(birth),
+        status,
+        address,
+      });
       await redisHelper.client.del(`growdever:${id}`);
+
+      return response.json(result);
     } catch (err: any) {
       return response.status(400).json({ error: err.message });
     }
-
-    return response.json(growdever.toJson());
   }
 }
