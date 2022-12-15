@@ -5,6 +5,7 @@ import { redisHelper } from "../../../shared/database/redis-helper";
 import { GrowdeverRepository } from "../repositories/growdever.repository";
 import { CreateGrowdever } from "../usecases/create-growdever.usecase";
 import { GetGrowdeverById } from "../usecases/get-growdever-by-id.usecase";
+import { RemoveGrowdever } from "../usecases/remove-growdever.usecase";
 
 export class GrowdeverController {
   async getById(request: Request, response: Response) {
@@ -134,10 +135,10 @@ export class GrowdeverController {
   async remove(request: Request, response: Response) {
     const { id } = request.params;
 
-    const repository = new GrowdeverRepository();
+    const usecase = new RemoveGrowdever(new GrowdeverRepository());
 
     try {
-      await repository.removeGrowdev(id);
+      await usecase.execute(id);
       await redisHelper.client.del(`growdever:${id}`);
       return response.status(200).json();
     } catch (error: any) {
