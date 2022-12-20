@@ -59,6 +59,7 @@ export class GrowdeverRepository {
   }
 
   async findByIDGrowdever(id: string): Promise<Growdever | undefined> {
+    console.log("PASSOU PELO REPOSITORIO");
     const manager = pgHelper.client.manager;
 
     // const growdeverEntity = await manager.findOneBy(GrowdeverEntity, { id });

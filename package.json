@@ -12,10 +12,12 @@
     "migration:run": "yarn typeorm-ts-node-commonjs migration:run -d src/main/database/typeorm.ts",
     "migration:create": "yarn typeorm migration:create src/main/database/migrations/CreateTableAssessments",
     "migration:revert": "yarn typeorm-ts-node-commonjs migration:revert -d src/main/database/typeorm.ts",
-    "test": "jest --silent --noStackTrace --runInBand",
-    "test:verbose": "jest --verbose --runInBand --detectOpenHandles",
-    "test:coverage": "jest --runInBand --coverage",
-    "test:watch": "jest --silent --noStackTrace --runInBand --watchAll"
+    "migration:test": "NODE_ENV=test yarn typeorm-ts-node-commonjs migration:run -d src/main/database/typeorm.ts",
+    "test:setup": "rimraf test.sqlite && npm run migration:test",
+    "test": "npm run test:setup && NODE_ENV=test jest --silent --noStackTrace --runInBand",
+    "test:verbose": "npm run test:setup && NODE_ENV=test jest --verbose --runInBand --detectOpenHandles",
+    "test:coverage": "npm run test:setup && NODE_ENV=test jest --runInBand --coverage",
+    "test:watch": "npm run test:setup && NODE_ENV=test jest --silent --noStackTrace --runInBand --watchAll"
   },
   "keywords": [],
   "author": "",
@@ -37,6 +39,10 @@
     "@types/jest": "^29.2.4",
     "@types/node": "^18.11.9",
     "@types/pg": "^8.6.5",
+    "@types/supertest": "^2.0.12",
+    "rimraf": "^3.0.2",
+    "sqlite3": "^5.1.4",
+    "supertest": "^6.3.3",
     "ts-jest": "^29.0.3",
     "ts-node-dev": "^2.0.0",
     "typescript": "^4.8.3"
