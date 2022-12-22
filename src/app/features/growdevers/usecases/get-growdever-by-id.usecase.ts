@@ -9,8 +9,6 @@ export class GetGrowdeverById {
   }
 
   async execute(id: string): Promise<Growdever | undefined> {
-    console.log("PASSOU PELO CASO DE USO");
-
     const growdever = await this._growdeverRepository.findByIDGrowdever(id);
 
     if (!growdever) {

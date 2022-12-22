@@ -31,9 +31,9 @@ export class AddressEntity {
     this.updatedAt = new Date();
   }
 
-  //   @BeforeInsert()
-  //   setCreatedAndUpdatedAt() {
-  //     this.createdAt = new Date();
-  //     this.updatedAt = new Date();
-  //   }
+  @BeforeInsert()
+  setCreatedAndUpdatedAt() {
+    this.createdAt = new Date();
+    this.updatedAt = new Date();
+  }
 }

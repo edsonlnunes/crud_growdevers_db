@@ -3,8 +3,6 @@ import { DataSourceOptions } from "typeorm";
 
 let config: DataSourceOptions;
 
-console.log(`NODE_ENV: ${process.env.NODE_ENV}`);
-
 if (process.env.NODE_ENV === "test") {
   config = {
     type: "sqlite",

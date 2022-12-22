@@ -17,7 +17,7 @@
     "test": "npm run test:setup && cross-env NODE_ENV=test jest --silent --noStackTrace --runInBand",
     "test:verbose": "npm run test:setup && cross-env NODE_ENV=test jest --verbose --runInBand --detectOpenHandles",
     "test:unit": "npm run test -- --watchAll -c jest.config.unit.js",
-    "test:integration": "npm run test -- --watchAll -c jest.config.integration.js",
+    "test:integration": "npm run test:verbose -- --watchAll -c jest.config.integration.js",
     "test:coverage": "npm run test -- --coverage"
   },
   "keywords": [],
@@ -42,6 +42,7 @@
     "@types/pg": "^8.6.5",
     "@types/supertest": "^2.0.12",
     "cross-env": "^7.0.3",
+    "ioredis-mock": "^8.2.2",
     "rimraf": "^3.0.2",
     "sqlite3": "^5.1.4",
     "supertest": "^6.3.3",

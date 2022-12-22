@@ -12,30 +12,30 @@ export class GrowdeverController {
   async getById(request: Request, response: Response) {
     const { id } = request.params;
 
-    console.log("PASSOU PELO CONTROLLER");
+    let resultCache = await redisHelper.client.get(`growdever:${id}`);
 
-    // let resultCache = await redisHelper.client.get(`growdever:${id}`);
+    if (resultCache) {
+      const growdeverCache = JSON.parse(resultCache);
+      const growdever = Growdever.create(
+        growdeverCache._id,
+        growdeverCache._name,
+        growdeverCache._cpf,
+        new Date(growdeverCache._birth),
+        growdeverCache._status,
+        growdeverCache._skills,
+        growdeverCache._address
+          ? Address.create(
+              growdeverCache._address._id,
+              growdeverCache._address._street,
+              growdeverCache._address._city,
+              growdeverCache._address._uf
+            )
+          : undefined,
+        growdeverCache._assessments
+      );
 
-    // if (resultCache) {
-    //   const growdeverCache = JSON.parse(resultCache);
-    //   const growdever = Growdever.create(
-    //     growdeverCache._id,
-    //     growdeverCache._name,
-    //     growdeverCache._cpf,
-    //     new Date(growdeverCache._birth),
-    //     growdeverCache._status,
-    //     growdeverCache._skills,
-    //     Address.create(
-    //       growdeverCache._address._id,
-    //       growdeverCache._address._street,
-    //       growdeverCache._address._city,
-    //       growdeverCache._address._uf
-    //     ),
-    //     growdeverCache._assessments
-    //   );
-
-    //   return response.status(200).json(growdever.toJson());
-    // }
+      return response.status(200).json(growdever.toJson());
+    }
 
     const usecase = new GetGrowdeverById(new GrowdeverRepository());
 
@@ -45,11 +45,11 @@ export class GrowdeverController {
       return response.status(404).json({ error: "Growdever não encontrado" });
     }
 
-    // await redisHelper.client.setex(
-    //   `growdever:${growdever.id}`,
-    //   60 * 60,
-    //   JSON.stringify(growdever)
-    // );
+    await redisHelper.client.setex(
+      `growdever:${growdever.id}`,
+      60 * 60,
+      JSON.stringify(growdever)
+    );
 
     return response.status(200).json(growdever.toJson());
   }

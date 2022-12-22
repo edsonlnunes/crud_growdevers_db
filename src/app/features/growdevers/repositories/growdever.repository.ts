@@ -13,7 +13,6 @@ export class GrowdeverRepository {
   }
 
   async saveGrowdever(growdever: Growdever): Promise<void> {
-    console.log("== PASSOU NO METODO SAVE GROWDEVER DO REPOSITORIO ===");
     const manager = pgHelper.client.manager;
 
     if (growdever.address) {
@@ -59,11 +58,9 @@ export class GrowdeverRepository {
   }
 
   async findByIDGrowdever(id: string): Promise<Growdever | undefined> {
-    console.log("PASSOU PELO REPOSITORIO");
     const manager = pgHelper.client.manager;
 
     // const growdeverEntity = await manager.findOneBy(GrowdeverEntity, { id });
-
     const growdeverEntity = await manager.findOne(GrowdeverEntity, {
       where: { id },
       // relations: ["assessmentsEntities"],

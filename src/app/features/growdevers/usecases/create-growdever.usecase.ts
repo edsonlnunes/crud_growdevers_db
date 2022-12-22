@@ -41,9 +41,6 @@ export class CreateGrowdever {
 
     await this._growdeverRepository.saveGrowdever(growdever);
 
-    // limpa o cache
-    // await redisHelper.client.del("growdevers");
-
     return growdever.toJson();
   }
 }
